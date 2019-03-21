@@ -30,13 +30,13 @@ def searchID(arr, user):
         if arr[i]["user"] == user:
             return i
 
-f = open("users.json", "r")
+f = open("json/users.json", "r")
 users = json.loads(f.read())
 f.close()
-f = open("Nya.json", "r")
+f = open("json/Nya.json", "r")
 Nya = json.loads(f.read())
 f.close()
-f = open("debts.json", "r")
+f = open("json/debts.json", "r")
 debts = json.loads(f.read())
 f.close()
 
@@ -81,19 +81,19 @@ def handle(msg):
 
             if '/ruser' == msg['text'][:6]:
                 tb.sendMessage(msg["chat"]["id"], users[random.randint(0, len(users) - 1)])
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
 
             if '/all' == msg['text'][:4]:
                 tb.sendMessage(msg["chat"]["id"], "\n".join([x["user"] + ": " + str(x["money"]) + (" *" if x["confirm"] else "") for x in users]))
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
 
             if '/confall' == msg['text'][:8]:
                 tb.sendMessage(msg["chat"]["id"], "\n".join([x["user"] + ": " + str(x["money"]) for x in users if x["confirm"]]))
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
 
@@ -102,7 +102,7 @@ def handle(msg):
                     tb.sendMessage(msg["chat"]["id"], search(users, un)["money"])
                 except:
                     pass
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
 
@@ -125,7 +125,7 @@ def handle(msg):
                     tb.sendMessage(uid, "@" + un + " отправил тебе " + str(coins) + " НяКоинов")
                 else:
                     tb.sendMessage(msg["chat"]["id"], "Ошибка: недостаточно денег")
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
 
@@ -151,10 +151,10 @@ def handle(msg):
                         else:
                             tb.sendMessage(msg["chat"]["id"], "подожди " + str(c[2] - (int(time.time()) - c[3])) + " секунд")
                         Nya['NyaMine'] = c[0]
-                        f = open("users.json", "w")
+                        f = open("json/users.json", "w")
                         f.write(json.dumps(users))
                         f.close()
-                        f = open("Nya.json", "w")
+                        f = open("json/Nya.json", "w")
                         f.write(json.dumps(Nya))
                         f.close()
                     else:
@@ -175,7 +175,7 @@ def handle(msg):
                 help += "(/gift [@username которому дарите] [количество NyaCoin] [сообщение])\n"
                 #help += "\n"
                 tb.sendMessage(msg["chat"]["id"], help)
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
 
@@ -209,10 +209,10 @@ def handle(msg):
                     tb.sendMessage(msg["chat"]["id"], "Ошибка: у @" + mesg[0] + " есть неподтвержденный долг")
                 elif search(users, un)['money'] < coins or search(users, mesg[0])['money'] < 0:
                     tb.sendMessage(msg["chat"]["id"], "Ошибка: недостаточно NyaCoin")
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
-                f = open("debts.json", "w")
+                f = open("json/debts.json", "w")
                 f.write(json.dumps(debts))
                 f.close()
 
@@ -229,10 +229,10 @@ def handle(msg):
                     tb.sendMessage(msg["chat"]["id"], "успешно подтверждено")
                     tb.sendMessage(uid, "@" + str(un) + " подтвердил debt")
                     print("успешно подтверждено")
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
-                f = open("debts.json", "w")
+                f = open("json/debts.json", "w")
                 f.write(json.dumps(debts))
                 f.close()
 
@@ -244,7 +244,7 @@ def handle(msg):
                     tb.sendMessage(msg["chat"]["id"], "успешно отменено")
                     tb.sendMessage(uid, "@" + str(un) + " отмененил debt")
                     print("успешно отменено")
-                    f = open("debts.json", "w")
+                    f = open("json/debts.json", "w")
                     f.write(json.dumps(debts))
                     f.close()
             
@@ -269,7 +269,7 @@ def handle(msg):
                     tb.sendMessage(uid, message)
                 else:
                     tb.sendMessage(msg["chat"]["id"], "Ошибка: недостаточно денег")
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
             
@@ -277,7 +277,7 @@ def handle(msg):
                 sm = round(sum([x["money"] for x in users]), 2)
                 num = len([x["user"] for x in users])
                 tb.sendMessage(msg["chat"]["id"], "всего NyaCoin'ов: " + str(sm) + "\nкол-во юзеров: " + str(num) + "\nкол-во NyaCoin'ов на человека: " + str(round(sm / num, 3)))
-                f = open("users.json", "w")
+                f = open("json/users.json", "w")
                 f.write(json.dumps(users))
                 f.close()
 
@@ -302,7 +302,7 @@ def debtCheck():
             users[searchID(users, debts[i]["to"])]['money'] = round(users[searchID(users, debts[i]["to"])]['money'], 2)
             users[searchID(users, debts[i]["from"])]['money'] = round(users[searchID(users, debts[i]["from"])]['money'], 2)
             debts.pop(i)
-            f = open("debts.json", "w")
+            f = open("json/debts.json", "w")
             f.write(json.dumps(debts))
             f.close()
             break
