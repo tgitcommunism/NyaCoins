@@ -91,6 +91,18 @@ def handle(msg):
                 f.write(json.dumps(users))
                 f.close()
 
+            if '/top' == msg['text'][:4]:
+                arr = [[x["user"] + ": " + str(x["money"]) + (" *" if x["confirm"] else "") for x in users], [x["money"] for x in users]]
+                for i in range(len(arr[0])):
+                    for i in range(len(arr[0]) - 1):
+                        if arr[1][i] < arr[1][i + 1]:
+                            arr[1][i], arr[1][i + 1] = arr[1][i + 1], arr[1][i]
+                            arr[0][i], arr[0][i + 1] = arr[0][i + 1], arr[0][i]
+                tb.sendMessage(msg["chat"]["id"], "\n".join(arr[0]))
+                f = open("json/users.json", "w")
+                f.write(json.dumps(users))
+                f.close()
+
             if '/confall' == msg['text'][:8]:
                 tb.sendMessage(msg["chat"]["id"], "\n".join([x["user"] + ": " + str(x["money"]) for x in users if x["confirm"]]))
                 f = open("json/users.json", "w")
